@@ -60,6 +60,7 @@ def ultra_main2():
 
     def create_block():
         global BLOCK
+        # Creates Food
         posx = SEG_SIZE * (random.randint(1, (WIDTH - SEG_SIZE) / SEG_SIZE))
         posy = SEG_SIZE * (random.randint(1, (HEIGHT - SEG_SIZE) / SEG_SIZE))
         # Блок это кружочек красного цвета
@@ -74,24 +75,28 @@ def ultra_main2():
             snake.move()
             head_coords = c.coords(snake.segments[-1].instance)
             x1, y1, x2, y2 = head_coords
+            # Checks for collision
             if x1 < 0 or x2 > WIDTH or y1 < 0 or y2 > HEIGHT:
                 IN_GAME = False
             elif head_coords == c.coords(BLOCK):
+                # Snake ate Snak
                 snake.add_segment()
                 c.itemconfig(score, text=LENGTH_SNAKE - 1)
                 c.delete(BLOCK)
                 create_block()
             else:
                 for index in range(len(snake.segments) - 1):
+                    # Game Over?
                     if c.coords(snake.segments[index].instance) == head_coords:
                         IN_GAME = False
+            # after small delay, run function again
             t.after(100, main)
         else:
+            # If game is over, show score and game over message
             c.create_text(WIDTH / 2, HEIGHT / 2,
                           text=f"GAME OVER!\nFINAL SCORE:\n{LENGTH_SNAKE - 1}",
                           font="Arial 20",
                           fill="#ff0000")
-            send_score()
 
     c = Canvas(t, width=WIDTH, height=HEIGHT, bg=modes[mode][0])
     c.grid()
@@ -107,11 +112,12 @@ def ultra_main2():
     create_block()
     main()
 
-
+# Username and theme selection
 def ultra_main1():
     global username, mode
 
     def go():
+        # Destroys input used at the start, and runs the actual game
         global username
         username = e.get()
         lab.destroy()
