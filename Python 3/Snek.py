@@ -17,10 +17,10 @@ def ultra_main2():
     global LENGTH_SNAKE
 
     class Segment(object):
-        def __init__(self, x, y):
+        def __init__(self, x, y, color=modes[mode][2]):
             self.instance = c.create_rectangle(x, y,
                                                x + SEG_SIZE, y + SEG_SIZE,
-                                               fill=modes[mode][2])
+                                               fill=color)
 
     class Snake(object):
         def __init__(self, segments):
@@ -30,7 +30,7 @@ def ultra_main2():
                             "Left": (-1, 0), "Right": (1, 0)}
             # изначально змейка двигается вправо
             self.vector = self.mapping["Right"]
-
+            self.vector_label = "Right"
         def move(self):
             for index in range(len(self.segments) - 1):
                 segment = self.segments[index].instance
@@ -44,8 +44,19 @@ def ultra_main2():
                      y2 + self.vector[1] * SEG_SIZE)
 
         def change_direction(self, event):
-            if event.keysym in self.mapping:
-                self.vector = self.mapping[event.keysym]
+            pressed_key = event.keysym
+            if pressed_key in self.mapping:
+                if self.vector_label == "Right" and pressed_key == "Left":
+                    print("pressed L while going R")
+                elif self.vector_label == "Left" and pressed_key == "Right":
+                    print("pressed R while going L")
+                elif self.vector_label == "Up" and pressed_key == "Down":
+                    print("pressed D while going U")
+                elif self.vector_label == "Down" and pressed_key == "Up":
+                    print("pressed U while going D")
+                else:
+                    self.vector = self.mapping[pressed_key]
+                    self.vector_label = pressed_key
 
         def add_segment(self):
             global LENGTH_SNAKE
@@ -75,7 +86,7 @@ def ultra_main2():
             snake.move()
             head_coords = c.coords(snake.segments[-1].instance)
             x1, y1, x2, y2 = head_coords
-            # Checks for collision
+            # Checks for collision with walls
             if x1 < 0 or x2 > WIDTH or y1 < 0 or y2 > HEIGHT:
                 IN_GAME = False
             elif head_coords == c.coords(BLOCK):
@@ -85,9 +96,9 @@ def ultra_main2():
                 c.delete(BLOCK)
                 create_block()
             else:
-                for index in range(len(snake.segments) - 1):
-                    # Game Over?
-                    if c.coords(snake.segments[index].instance) == head_coords:
+                for i in snake.segments[:-1]:
+                    # checks for collision with self
+                    if c.coords(i.instance) == head_coords:
                         IN_GAME = False
             # after small delay, run function again
             t.after(100, main)
@@ -103,8 +114,8 @@ def ultra_main2():
     c.focus_set()
 
     segments = [Segment(SEG_SIZE, SEG_SIZE),
-                Segment(SEG_SIZE * 2, SEG_SIZE),
-                Segment(SEG_SIZE * 3, SEG_SIZE)]
+                Segment(SEG_SIZE*2, SEG_SIZE),
+                Segment(SEG_SIZE*3, SEG_SIZE, "green")]
     snake = Snake(segments)
     score = c.create_text(300, 30, text=LENGTH_SNAKE - 1, font='Times 40 italic bold', fill=modes[mode][3])
 
