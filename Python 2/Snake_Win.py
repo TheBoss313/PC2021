@@ -165,6 +165,7 @@ def main():
                 create_bonus()
         elif head_coords == c.coords(BONUS_BLOCK):
             # Snake ate Big Snack
+            PlaySound("chomp.wav", SND_ASYNC)
             snake.add_segment_b()
             time_passed = time() - BONUS_START_TIME
             BASE_SCORE += calculate_bonus(time_passed)
@@ -226,7 +227,7 @@ def ultra_main1():
         try:
             score_l.destroy()
             b_leader.destroy()
-        except UnboundLocalError:
+        except NameError:
             pass
         ultra_main2()
 
