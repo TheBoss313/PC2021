@@ -181,7 +181,6 @@ def main():
         t.after(100, main)
     else:
         # If game is over, show score and game over message
-        # TODO Make message nicer / add play again button / add seperate window for it
         c.destroy()
         SCORES_LEADERBOARD.append((username, BASE_SCORE))
         ultra_main1()
@@ -245,22 +244,22 @@ def ultra_main1():
             l.pack()
 
     lab = Label(t, text='ENTER USERNAME')
-    lab.pack()
+    lab.grid(row=0, column=0, columnspan=2)
     e = Entry()
-    e.pack()
+    e.grid(row=1, column=0, columnspan=2)
     if len(SCORES_LEADERBOARD) > 0:
         score_l = Label(t, text=f"SCORE: {SCORES_LEADERBOARD[-1][1]}")
         b_leader = Button(t, text="Leaderboard", command=leaderboard)
         b = Button(text='Play Again!', command=lambda: go())
-        score_l.pack()
-        b_leader.pack()
+        score_l.grid(row=2, column=0)
+        b_leader.grid(row=2, column=1)
     else:
         b = Button(text='Play!', command=lambda: go())
-    b.pack()
+    b.grid(row=3, column=0, columnspan=2)
     b_m1 = Button(text='Eye Death', command=lambda mode2='normal': set_mode(mode2))
     b_m2 = Button(text='Dark', command=lambda mode2='dark': set_mode(mode2))
-    b_m1.pack(side='left')
-    b_m2.pack(side='right')
+    b_m1.grid(row=4, column=0)
+    b_m2.grid(row=4, column=1)
 
 
 ultra_main1()
