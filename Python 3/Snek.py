@@ -3,9 +3,8 @@ from winsound import PlaySound, SND_ASYNC
 import random
 from math import floor
 from time import time
-
 t = Tk()
-t.title('Snek')
+t.title('Sneak')
 SCORES_LEADERBOARD = []
 WIDTH = 600
 HEIGHT = 800
@@ -24,8 +23,8 @@ username = ''
 mode = 'dark'
 
 
-def calculate_bonus(time):
-    return 100 - (floor(time * 10))
+def calculate_bonus(time_from_start):
+    return 100 - (floor(time_from_start * 10))
 
 
 class Segment(object):
@@ -97,12 +96,12 @@ def create_block():
     global BLOCK
     # Creates Food
     while True:
-        posx = SEG_SIZE * (random.randint(1, int((WIDTH - SEG_SIZE) / SEG_SIZE)))
+        posix = SEG_SIZE * (random.randint(1, int((WIDTH - SEG_SIZE) / SEG_SIZE)))
         posy = SEG_SIZE * (random.randint(1, int((GAME_HEIGHT - SEG_SIZE) / SEG_SIZE)))
         on_top = 0
         for i in snake.segments:
             seg_coords = c.coords(i.instance)
-            if (posx, posy, posx + SEG_SIZE, posy + SEG_SIZE) == seg_coords:
+            if (posix, posy, posix + SEG_SIZE, posy + SEG_SIZE) == seg_coords:
                 on_top = 1
                 break
         if on_top == 1:
@@ -110,8 +109,8 @@ def create_block():
         else:
             break
     # Блок это кружочек красного цвета
-    BLOCK = c.create_oval(posx, posy,
-                          posx + SEG_SIZE,
+    BLOCK = c.create_oval(posix, posy,
+                          posix + SEG_SIZE,
                           posy + SEG_SIZE,
                           fill=modes[mode][1])
 
@@ -120,20 +119,20 @@ def create_bonus():
     global BONUS_BLOCK, BONUS_START_TIME
     # Creates Bonus Food
     while True:
-        posx = SEG_SIZE * (random.randint(1, int((WIDTH - SEG_SIZE) / SEG_SIZE)))
+        posix = SEG_SIZE * (random.randint(1, int((WIDTH - SEG_SIZE) / SEG_SIZE)))
         posy = SEG_SIZE * (random.randint(1, int((GAME_HEIGHT - SEG_SIZE) / SEG_SIZE)))
         on_top = 0
         for i in snake.segments:
             seg_coords = c.coords(i.instance)
-            if [float(posx), float(posy), float(posx + SEG_SIZE), float(posy + SEG_SIZE)] == seg_coords:
+            if [float(posix), float(posy), float(posix + SEG_SIZE), float(posy + SEG_SIZE)] == seg_coords:
                 on_top = 1
                 break
         if on_top == 1:
             pass
         else:
             break
-    BONUS_BLOCK = c.create_oval(posx, posy,
-                                posx + SEG_SIZE,
+    BONUS_BLOCK = c.create_oval(posix, posy,
+                                posix + SEG_SIZE,
                                 posy + SEG_SIZE,
                                 fill="yellow")  # change to theme color later
     BONUS_START_TIME = time()
@@ -151,7 +150,7 @@ def main():
         if x1 < 0 or x2 > WIDTH or y1 < 0 or y2 > GAME_HEIGHT:
             IN_GAME = False
         elif head_coords == c.coords(BLOCK):
-            # Snake ate Smol Snak
+            # Snake ate Small Snack
             PlaySound("chomp.wav", SND_ASYNC)
             snake.add_segment()
             TO_BONUS -= 1
@@ -159,18 +158,18 @@ def main():
                 TO_BONUS = 5
             BASE_SCORE += FOOD_VALUE
             c.itemconfig(score, text=f"Score: {BASE_SCORE}")
-            c.itemconfig(to_bonus, text=f"Untill Bonus: {TO_BONUS}")
+            c.itemconfig(to_bonus, text=f"Until Bonus: {TO_BONUS}")
             c.delete(BLOCK)
             create_block()
             if (LENGTH_SNAKE - 1) % 5 == 0:
                 create_bonus()
         elif head_coords == c.coords(BONUS_BLOCK):
-            # Snake ate Big Snak
+            # Snake ate Big Snack
             snake.add_segment_b()
             time_passed = time() - BONUS_START_TIME
             BASE_SCORE += calculate_bonus(time_passed)
             c.itemconfig(score, text=f"Score: {BASE_SCORE}")
-            c.itemconfig(to_bonus, text=f"Untill Bonus: {TO_BONUS}")
+            c.itemconfig(to_bonus, text=f"Until Bonus: {TO_BONUS}")
             c.delete(BONUS_BLOCK)
         else:
             for i in snake.segments[:-1]:
@@ -203,7 +202,7 @@ def ultra_main2():
     snake = Snake(segments)
     score = c.create_text(100, GAME_HEIGHT + 70, text=f"Score: {BASE_SCORE}", font='Times 30 italic bold',
                           fill=modes[mode][3])
-    to_bonus = c.create_text(130, GAME_HEIGHT + 110, text=f"Untill Bonus: {TO_BONUS}", font='Times 30 italic bold',
+    to_bonus = c.create_text(130, GAME_HEIGHT + 110, text=f"Until Bonus: {TO_BONUS}", font='Times 30 italic bold',
                              fill=modes[mode][3])
 
     c.bind("<KeyPress>", snake.change_direction)
@@ -227,7 +226,7 @@ def ultra_main1():
         try:
             score_l.destroy()
             b_leader.destroy()
-        except:
+        except UnboundLocalError:
             pass
         ultra_main2()
 
@@ -237,11 +236,11 @@ def ultra_main1():
 
     def leaderboard():
         tk = Tk()
-        tk.title("Snek Leaderboard")
+        tk.title("Sneak Leaderboard")
         for i in SCORES_LEADERBOARD:
             line = f"{i[0]}: {i[1]}"
-            l = Label(tk, text=line)
-            l.pack()
+            lab_score = Label(tk, text=line)
+            lab_score.pack()
 
     lab = Label(t, text='ENTER USERNAME')
     lab.grid(row=0, column=0, columnspan=2)
