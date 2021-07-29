@@ -73,22 +73,22 @@ class Snake(object):
 
     def add_segment(self, color=modes[mode][2]):
         global LENGTH_SNAKE
-        # Определяем последний сегмент
+        # Finding last existing segment
         last_seg = c.coords(self.segments[0].instance)
-        # Определяем координаты куда поставить следующий сегмент
+        # Figure out where to put next segment
         x = last_seg[2] - SEG_SIZE
         y = last_seg[3] - SEG_SIZE
         LENGTH_SNAKE += 1
-        # Добавляем змейке еще один сегмент в заданных координатах
+        # Adding an extra segment at given coordiantes
         self.segments.insert(0, Segment(x, y, color))
 
     def add_segment_b(self, color="yellow"):
-        # Определяем последний сегмент
+        # Finding last existing segment
         last_seg = c.coords(self.segments[0].instance)
-        # Определяем координаты куда поставить следующий сегмент
+        # Figure out where to put next segment
         x = last_seg[2] - SEG_SIZE
         y = last_seg[3] - SEG_SIZE
-        # Добавляем змейке еще один сегмент в заданных координатах
+        # Adding an extra segment at given coordiantes
         self.segments.insert(0, Segment(x, y, color))
 
 
@@ -108,7 +108,7 @@ def create_block():
             pass
         else:
             break
-    # Блок это кружочек красного цвета
+    # Block is food, a coloured circle
     BLOCK = c.create_oval(posix, posy,
                           posix + SEG_SIZE,
                           posy + SEG_SIZE,
